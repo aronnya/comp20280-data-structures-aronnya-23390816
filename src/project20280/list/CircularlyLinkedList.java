@@ -28,8 +28,8 @@ public class CircularlyLinkedList<E> implements List<E> {
         }
     }
 
-    private final Node<E> tail = null;
-    private final int size = 0;
+    private Node<E> tail = null;
+    private int size = 0;
 
     public CircularlyLinkedList() {
 
@@ -43,7 +43,16 @@ public class CircularlyLinkedList<E> implements List<E> {
     @Override
     public E get(int i) {
         // TODO
-        return null;
+        if (i < 0 || i >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        Node<E> curr = tail.next;
+        for (int j = 0; j < i; j++) {
+            curr = curr.next;
+        }
+
+        return curr.data;
     }
 
     /**
@@ -56,30 +65,77 @@ public class CircularlyLinkedList<E> implements List<E> {
     @Override
     public void add(int i, E e) {
         // TODO
+        if (i < 0 || i > size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (i == 0) {
+            addFirst(e);
+        } else if (i == size) {
+            addLast(e);
+        } else {
+            Node<E> curr = tail.next;
+            for (int j = 0; j < i - 1; j++) {
+                curr = curr.next;
+            }
+
+            Node<E> newest = new Node<E>(e, curr.next);
+            curr.next = newest;
+            size++;
+        }
     }
 
     @Override
     public E remove(int i) {
         // TODO
-        return null;
+        if (i < 0 || i >= size) {
+            throw new IndexOutOfBoundsException();
+        }
+
+        if (i == 0) {
+            return removeFirst();
+        }
+
+        Node<E> curr = tail.next;
+        for (int j = 0; j < i - 1; j++) {
+            curr = curr.next;
+        }
+
+        Node<E> removed = curr.next;
+        curr.next = removed.next;
+
+        if (removed == tail) {
+            tail = curr;
+        }
+
+        size--;
+        return removed.data;
     }
 
     public void rotate() {
         // TODO
+        if (tail != null) {
+            tail = tail.next;
+        }
     }
 
     private class CircularlyLinkedListIterator<E> implements Iterator<E> {
         Node<E> curr = (Node<E>) tail;
+        int count = 0;
 
         @Override
         public boolean hasNext() {
-            return curr != tail;
+            return count < size;
         }
 
         @Override
         public E next() {
+            if (count == 0) {
+                curr = curr.next;
+            }
             E res = curr.data;
             curr = curr.next;
+            count++;
             return res;
         }
 
@@ -98,28 +154,74 @@ public class CircularlyLinkedList<E> implements List<E> {
     @Override
     public E removeFirst() {
         // TODO
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        Node<E> head = tail.next;
+        E answer = head.data;
+
+        if (head == tail) {
+            tail = null;
+        } else {
+            tail.next = head.next;
+        }
+
+        size--;
+        return answer;
     }
 
     @Override
     public E removeLast() {
         // TODO
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        if (size == 1) {
+            return removeFirst();
+        }
+
+        Node<E> curr = tail.next;
+        while (curr.next != tail) {
+            curr = curr.next;
+        }
+
+        E answer = tail.data;
+        curr.next = tail.next;
+        tail = curr;
+        size--;
+
+        return answer;
     }
 
     @Override
     public void addFirst(E e) {
         // TODO
+        if (isEmpty()) {
+            tail = new Node<E>(e, null);
+            tail.next = tail;
+        } else {
+            Node<E> newest = new Node<E>(e, tail.next);
+            tail.next = newest;
+        }
+        size++;
     }
 
     @Override
     public void addLast(E e) {
         // TODO
+        addFirst(e);
+        tail = tail.next;
     }
 
 
     public String toString() {
         StringBuilder sb = new StringBuilder("[");
+        if (isEmpty()) {
+            sb.append("]");
+            return sb.toString();
+        }
         Node<E> curr = tail;
         do {
             curr = curr.next;
