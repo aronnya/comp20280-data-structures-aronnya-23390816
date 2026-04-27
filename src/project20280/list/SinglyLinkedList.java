@@ -219,6 +219,39 @@ public class SinglyLinkedList<E> implements List<E> {
         return sb.toString();
     }
 
+    // Q6(b)
+    public void reverse() {
+        head = reverseRecursive(head);
+    }
+
+    private Node<E> reverseRecursive(Node<E> node) {
+        if (node == null || node.getNext() == null) {
+            return node;
+        }
+
+        Node<E> newHead = reverseRecursive(node.getNext());
+        node.getNext().setNext(node);
+        node.setNext(null);
+
+        return newHead;
+    }
+
+    // Q7(b)
+    public SinglyLinkedList<E> recursiveCopy() {
+        SinglyLinkedList<E> copy = new SinglyLinkedList<>();
+        copy.head = copyRecursive(this.head);
+        copy.size = this.size;
+        return copy;
+    }
+
+    private Node<E> copyRecursive(Node<E> node) {
+        if (node == null) {
+            return null;
+        }
+
+        return new Node<>(node.getElement(), copyRecursive(node.getNext()));
+    }
+
     public static void main(String[] args) {
         SinglyLinkedList<Integer> ll = new SinglyLinkedList<Integer>();
         System.out.println("ll " + ll + " isEmpty: " + ll.isEmpty());
