@@ -23,6 +23,8 @@ public class SinglyLinkedList<E> implements List<E> {
          */
         public Node(E e, Node<E> n) {
             // TODO
+            element = e;
+            next = n;
         }
 
         // Accessor methods
@@ -33,7 +35,8 @@ public class SinglyLinkedList<E> implements List<E> {
          * @return the element stored at the node
          */
         public E getElement() {
-            return null;
+            // TODO
+            return element;
         }
 
         /**
@@ -43,7 +46,7 @@ public class SinglyLinkedList<E> implements List<E> {
          */
         public Node<E> getNext() {
             // TODO
-            return null;
+            return next;
         }
 
         // Modifier methods
@@ -55,6 +58,7 @@ public class SinglyLinkedList<E> implements List<E> {
          */
         public void setNext(Node<E> n) {
             // TODO
+            next = n;
         }
     } //----------- end of nested Node class -----------
 
@@ -75,53 +79,110 @@ public class SinglyLinkedList<E> implements List<E> {
     //@Override
     public int size() {
         // TODO
-        return 0;
+        return size;
     }
 
     //@Override
     public boolean isEmpty() {
         // TODO
-        return false;
+        return size == 0;
     }
 
     @Override
     public E get(int position) {
         // TODO
-        return null;
+        if (position < 0 || position >= size) {
+            throw new IndexOutOfBoundsException("Invalid position: " + position);
+        }
+
+        Node<E> curr = head;
+        for (int i = 0; i < position; i++) {
+            curr = curr.getNext();
+        }
+
+        return curr.getElement();
     }
 
     @Override
     public void add(int position, E e) {
         // TODO
+        if (position < 0 || position > size) {
+            throw new IndexOutOfBoundsException("Invalid position: " + position);
+        }
+
+        if (position == 0) {
+            addFirst(e);
+        } else {
+            Node<E> curr = head;
+            for (int i = 0; i < position - 1; i++) {
+                curr = curr.getNext();
+            }
+
+            Node<E> newest = new Node<>(e, curr.getNext());
+            curr.setNext(newest);
+            size++;
+        }
     }
 
 
     @Override
     public void addFirst(E e) {
         // TODO
+        head = new Node<>(e, head);
+        size++;
     }
 
     @Override
     public void addLast(E e) {
         // TODO
+        add(size, e);
     }
 
     @Override
     public E remove(int position) {
         // TODO
-        return null;
+        if (position < 0 || position >= size) {
+            throw new IndexOutOfBoundsException("Invalid position: " + position);
+        }
+
+        if (position == 0) {
+            return removeFirst();
+        }
+
+        Node<E> curr = head;
+        for (int i = 0; i < position - 1; i++) {
+            curr = curr.getNext();
+        }
+
+        Node<E> removed = curr.getNext();
+        curr.setNext(removed.getNext());
+        size--;
+
+        return removed.getElement();
     }
 
     @Override
     public E removeFirst() {
         // TODO
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        E answer = head.getElement();
+        head = head.getNext();
+        size--;
+
+        return answer;
     }
 
     @Override
     public E removeLast() {
         // TODO
-        return null;
+        if (isEmpty()) {
+            return null;
+        }
+
+        return remove(size - 1);
     }
 
     //@Override
