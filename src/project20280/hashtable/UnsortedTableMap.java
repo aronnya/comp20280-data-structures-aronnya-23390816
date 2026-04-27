@@ -30,7 +30,13 @@ public class UnsortedTableMap<K, V> extends AbstractMap<K, V> {
      */
     private int findIndex(K key) {
         // TODO
-        return 0;
+
+        for (int i = 0; i < table.size(); i++) {
+            if (table.get(i).getKey().equals(key)) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     // public methods
@@ -55,7 +61,12 @@ public class UnsortedTableMap<K, V> extends AbstractMap<K, V> {
     @Override
     public V get(K key) {
         // TODO
-        return null;
+
+        int j = findIndex(key);
+        if (j == -1) {
+            return null;
+        }
+        return table.get(j).getValue();
     }
 
     /**
@@ -71,12 +82,21 @@ public class UnsortedTableMap<K, V> extends AbstractMap<K, V> {
     @Override
     public V put(K key, V value) {
         // TODO
-        return null;
+
+        int j = findIndex(key);
+        if (j == -1) {
+            table.add(new MapEntry<>(key, value));
+            return null;
+        } else {
+            V old = table.get(j).getValue();
+            table.get(j).setValue(value);
+            return old;
+        }
     }
 
     /**
      * Removes the entry with the specified key, if present, and returns its value.
-     * Otherwise does nothing and returns null.
+     * Otherwis does nothing and returns null.
      *
      * @param key the key whose entry is to be removed from the map
      * @return the previous value associated with the removed key, or null if no
@@ -85,7 +105,14 @@ public class UnsortedTableMap<K, V> extends AbstractMap<K, V> {
     @Override
     public V remove(K key) {
         // TODO
-        return null;
+
+        int j = findIndex(key);
+        if (j == -1) {
+            return null;
+        }
+        V answer = table.get(j).getValue();
+        table.remove(j);
+        return answer;
     }
 
     // ---------------- nested EntryIterator class ----------------
